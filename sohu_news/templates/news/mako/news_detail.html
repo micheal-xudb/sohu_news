@@ -1,0 +1,82 @@
+## -*- coding: utf-8 -*-
+<%inherit file="base.html"/>
+<%block name="title">
+    搜狐新闻--新闻详情
+</%block>
+<%block name="content">
+<div class="container" style="margin-top: 40px">
+    <div class="row-fluid">
+        <div class="span10" style="text-align: center">
+            <h2 class="center">${ news_current.title}</h2>
+            <p>
+                作者：${ news_current.author }   分类：${ news_current.category }  发布日期：${news_current.pub_time}
+                <div id="zoom-out" style="width:50px;display: inline;cursor:pointer;">
+                <i class="icon-large icon-zoom-out pull-right" style="margin-left: 20px">
+                </i></div>
+                <div id="zoom-in"  style="width:50px;display: inline;cursor:pointer;">
+                <i class="icon-large icon-zoom-in pull-right" >
+                </i></div>
+                <script>
+                $(document).ready(function(){
+                    // Increase Font Size
+                    $("#zoom-in").click(function(){
+                        var currentFontSize = $('#news_article').css('font-size');
+                        var currentFontSizeNum = parseFloat(currentFontSize, 10);
+                        if (currentFontSizeNum < 28)
+                            {var newFontSize = currentFontSizeNum*1.2;}
+                        else{ alert("Largest font-size");}
+                        $('#news_article').css('font-size', newFontSize);
+                        return false;
+                    });
+                    // Decrease Font Size
+                    $("#zoom-out").click(function(){
+                        var currentFontSize = $('#news_article').css('font-size');
+                        var currentFontSizeNum = parseFloat(currentFontSize, 10);
+                        var newFontSize = currentFontSizeNum*0.8;
+                        $('#news_article').css('font-size', newFontSize);
+                        return false;
+                    });
+                });
+                </script>
+            </p>
+        </div>
+        <hr>
+        <div id="news_article" class="span12" style="margin-left: 0px; margin-top: 10px;font-size: 17px">
+            <p>${ news_current.article }</p>
+            <div class="dislike pull-right" style="cursor:pointer;width: 70px;">
+                <i class="icon-thumbs-down" style="margin-left: 20px"></i>
+                <p> 被踩<label id="dislike-num" style="display: inline">${ news_current.dislike}</label></p>
+            </div>
+            <div class="like pull-right" style="cursor:pointer;width: 70px;margin-right: 10px">
+                <i class="icon-thumbs-up" style="margin-left: 20px"></i>
+                <p> 被顶<label id="like-num" style="display: inline">${ news_current.like}</label></p>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    $(".like").click(function(){
+                        $.ajax({
+                            url:'/newslike/${news_current.id}',
+                            type: "get",
+                            success: function(){
+                                var current_like = parseInt($("#like-num").text()) ;
+                                $("#like-num").html(current_like + 1);
+                            }
+                        });
+                    });
+                    $(".dislike").click(function(){
+                        $.ajax({
+                            url:'/newsdislike/${news_current.id}',
+                            type: "get",
+                            success: function(){
+                                var current_like = parseInt($("#dislike-num").text()) ;
+                                $("#dislike-num").html(current_like + 1);
+                            }
+                        });
+                    });
+                });
+
+            </script>
+        </div>
+    </div>
+</div>
+</%block>
